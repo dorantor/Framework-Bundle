@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\FrameworkBundle;
+namespace PHPixie\FrameworkBundle;
 
 class Console extends \PHPixie\Console\Registry\Provider\Implementation
 {

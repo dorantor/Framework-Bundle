@@ -12,26 +12,31 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
         $this->assets  = $assets;
         $this->bundles = $bundles;
         
-        $config->name('installassets');
         $config->description("Symlink or copy bundle web files to the projects web folder");
         
-        $config->option('copy')->flag();
+        $config->option('copy')
+            ->flag()
+            ->description("Whether to copy web directories instead of symlinking them");
+        
+        parent::__construct($config);
     }
     
-    public function run($optionData, $argumentData)
+    public function run($argumentData, $optionData)
     {
         $copy = $optionData->get('copy', false);
+        
         if($copy) {
             $this->writeLine("Copying web asset directories:");
         }else {
             $this->writeLine("Symlinking web asset directories:");
         }
         
-        $path = $this->aseets->webRoot()->path('bundles');
+        $path = $this->assets->webRoot()->path('bundles');
+        
+        $this->remove($path);
+        mkdir($path, 0755);
         
         foreach($this->bundles->bundles() as $name => $bundle) {
-            $this->writeLine("Bundle: $name");
-            
             if(!($bundle instanceof \PHPixie\Bundles\Bundle\Provides\WebRoot)) {
                 continue;
             }
@@ -40,11 +45,8 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
                 continue;
             }
             
+            $this->writeLine("Bundle: $name");
             $bundlePath = $path.'/'.$name;
-            
-            if(file_exists($bundlePath)) {
-                unlink($bundlePath);
-            }
             
             if($copy) {
                 $this->copyRecursive($bundleRoot->path(), $path.'/'.$name);
@@ -67,12 +69,33 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
         );
         
         foreach($iterator as $item) {
-            if ($item->isDir()) {
-                mkdir($dest.'/'.$iterator->getSubPathName());
+            if (!$item->isLink() && $item->isDir()) {
+                mkdir($dst.'/'.$iterator->getSubPathName());
                 continue;
             }
             
-            copy($item, $dest.'/'.$iterator->getSubPathName());
+            copy($item, $dst.'/'.$iterator->getSubPathName());
         }
+    }
+    
+    protected function remove($path)
+    {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
+                $path,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($iterator as $item) {
+            if (!$item->isLink() && $item->isDir()) {
+                rmdir($item);
+            } else {
+                unlink($item);
+            }
+        }
+        
+        rmdir($path);
     }
 }
