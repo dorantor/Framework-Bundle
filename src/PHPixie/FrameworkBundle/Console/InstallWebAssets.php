@@ -1,127 +1,117 @@
 <?php
 
-namespace PHPixie\Console;
+namespace PHPixie\FrameworkBundle\Console;
 
-use PHPixie\Console\Exception\InvalidInputException;
-use PHPixie\Console\Exception\CommandException;
+use \PHPixie\Console\Exception\CommandException;
 
-class Runner
+class InstallWebAssets extends \PHPixie\Console\Command\Implementation
 {
-    protected $builder;
+    protected $assets;
+    protected $bundles;
     
-    public function __construct($builder)
+    public function __construct($config, $assets, $bundles)
     {
-        $this->builder = $builder;
+        $this->assets  = $assets;
+        $this->bundles = $bundles;
+        
+        $config->description("Symlink or copy bundle web files to the projects web folder");
+        
+        $config->option('copy')
+            ->flag()
+            ->description("Whether to copy web directories instead of symlinking them");
+        
+        parent::__construct($config);
     }
     
-    public function runFromContext()
+    public function run($argumentData, $optionData)
     {
-        $cliContext = $this->builder->cli()->context();
-        $arguments = $cliContext->arguments();
+        $copy = $optionData->get('copy', false);
         
-        $commandName = $this->builder->registry()->defaultName();
-        
-        if(!empty($arguments)) {
-            $commandName = array_shift($arguments);
+        if($copy) {
+            $this->writeLine("Copying web asset directories:");
+        }else {
+            $this->writeLine("Symlinking web asset directories:");
         }
         
-        $this->runCommand($commandName, $arguments, $cliContext->options(), true);
+        $path = $this->assets->webRoot()->path('bundles');
+        
+        $this->remove($path);
+        mkdir($path, 0755);
+        
+        foreach($this->bundles->bundles() as $name => $bundle) {
+            if(!($bundle instanceof \PHPixie\Bundles\Bundle\Provides\WebRoot)) {
+                continue;
+            }
+                
+            if(($bundleRoot = $bundle->webRoot()) === null) {
+                continue;
+            }
+            
+            $this->writeLine("Bundle: $name");
+            $bundlePath = $path.'/'.$name;
+            
+            if($copy) {
+                $this->copyRecursive($bundleRoot->path(), $path.'/'.$name);
+            } else {
+                $this->symlink($bundleRoot->path(), $path.'/'.$name);
+            }
+        }
     }
     
-    public function runCommand($commandName, $arguments, $options, $rethrowException = true)
+    protected function symlink($src, $dst)
     {
-        $cliContext = $this->builder->cli()->context();
-        
         try{
-            $command = $this->builder->registry()->get($commandName);
-            
-            $config = $command->config();
-            
-            $optionData = $this->getOptions($config->getOptions(), $options);
-            $argumentData = $this->getArguments($config->getArguments(), $arguments);
-            
-            $message = $command->run($argumentData, $optionData);
-            if($message !== null) {
-                $cliContext->outputStream()->writeLine($message);
-            }
-        } catch(\Exception $e) {
-            $cliContext->setExitCode(1);
-            $errorStream = $cliContext->errorStream();
-            
-            if(!($e instanceof CommandException)) {
-                if($rethrowException) {
-                    throw $e;
-                }
-                
-                $errorStream->writeLine($this->builder->formatter()->exception($e));
-                return;
-            }
-            
-            $errorStream->writeLine($this->builder->formatter()->error($e->getMessage()));
-            
-            if($e instanceof InvalidInputException) {
-                $errorStream->writeLine($command->usage());
-            }
+            symlink($src, $dst);
+        } catch (\Exception $e) {
+            $message = 'Failed to create a symlink. If using Windows re-run this command as administrator.';
+            throw new CommandException($message);
         }
     }
     
-    protected function getOptions($options, $optionData)
+    protected function copyRecursive($src, $dst)
     {
-        $names = array();
-        $required = array();
+        mkdir($dst, 0755);
         
-        foreach ($options as $option) {
-            $names[] = $option->name();
-            if($option->isRequired()) {
-                $required[] = $option->name();
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
+                $src,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+        
+        foreach($iterator as $item) {
+            if (!$item->isLink() && $item->isDir()) {
+                mkdir($dst.'/'.$iterator->getSubPathName());
+                continue;
             }
+            
+            copy($item, $dst.'/'.$iterator->getSubPathName());
         }
-
-        $keys = array_keys($optionData);
-        
-        $extraKeys = array_diff($keys, $names);
-        if(!empty($extraKeys)) {
-            throw new InvalidInputException("Invalid option(s): ".implode(', ', $extraKeys));
-        }
-
-        $missingKeys = array_intersect($required, $keys);
-        if(!empty($missingKeys)) {
-            throw new InvalidInputException("Missing required option(s): ".implode(', ', $missingKeys));
-        }
-        
-        return $this->builder->arraySlice($optionData);
     }
     
-    protected function getArguments($arguments, $argumentData)
+    protected function remove($path)
     {
-        $map = array();
-        
-        $mappedAll = false;
-        
-        $i = 0;
-        foreach($arguments as $key => $argument) {
-            if(!array_key_exists($i, $argumentData)) {
-                if($argument->isRequired()) {
-                    throw new InvalidInputException("Missing argument: {$argument->name()}");
-                }
-                
-                break;
-            }
-            
-            if($argument->isArray()) {
-                $map[$argument->name()] = array_slice($argumentData, $i);
-                $mappedAll = true;
-                break;
-            }
-            
-            $map[$argument->name()] = $argumentData[$i];
-            $i++;
+        if(!file_exists($path)) {
+            return;
         }
         
-        if(!$mappedAll && count($argumentData) > count($arguments)) {
-            throw new Exception\InvalidInputException("Too many arguments supplied");
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(
+                $path,
+                \RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($iterator as $item) {
+            if (!$item->isLink() && $item->isDir()) {
+                rmdir($item);
+            } else {
+                unlink($item);
+            }
         }
         
-        return $this->builder->arraySlice($map);
+        rmdir($path);
     }
 }
