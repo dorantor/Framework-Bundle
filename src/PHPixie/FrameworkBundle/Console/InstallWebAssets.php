@@ -8,11 +8,13 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
 {
     protected $assets;
     protected $bundles;
+    protected $filesystem;
     
-    public function __construct($config, $assets, $bundles)
+    public function __construct($config, $assets, $bundles, $filesystem)
     {
         $this->assets  = $assets;
         $this->bundles = $bundles;
+        $this->filesystem = $filesystem;
         
         $config->description("Symlink or copy bundle web files to the projects web folder");
         
@@ -25,6 +27,7 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
     
     public function run($argumentData, $optionData)
     {
+        $actions = $this->filesystem->actions();
         $copy = $optionData->get('copy', false);
         
         if($copy) {
@@ -35,8 +38,8 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
         
         $path = $this->assets->webRoot()->path('bundles');
         
-        $this->remove($path);
-        mkdir($path, 0755);
+        $actions->remove($path);
+        $actions->createDirectory($path);
         
         foreach($this->bundles->bundles() as $name => $bundle) {
             if(!($bundle instanceof \PHPixie\Bundles\Bundle\Provides\WebRoot)) {
@@ -51,67 +54,16 @@ class InstallWebAssets extends \PHPixie\Console\Command\Implementation
             $bundlePath = $path.'/'.$name;
             
             if($copy) {
-                $this->copyRecursive($bundleRoot->path(), $path.'/'.$name);
-            } else {
-                $this->symlink($bundleRoot->path(), $path.'/'.$name);
-            }
-        }
-    }
-    
-    protected function symlink($src, $dst)
-    {
-        try{
-            symlink($src, $dst);
-        } catch (\Exception $e) {
-            $message = 'Failed to create a symlink. If using Windows re-run this command as administrator.';
-            throw new CommandException($message);
-        }
-    }
-    
-    protected function copyRecursive($src, $dst)
-    {
-        mkdir($dst, 0755);
-        
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
-                $src,
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            ),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-        
-        foreach($iterator as $item) {
-            if (!$item->isLink() && $item->isDir()) {
-                mkdir($dst.'/'.$iterator->getSubPathName());
+                $actions->copy($bundleRoot->path(), $path.'/'.$name);
                 continue;
             }
             
-            copy($item, $dst.'/'.$iterator->getSubPathName());
-        }
-    }
-    
-    protected function remove($path)
-    {
-        if(!file_exists($path)) {
-            return;
-        }
-        
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(
-                $path,
-                \RecursiveDirectoryIterator::SKIP_DOTS
-            ),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-        
-        foreach ($iterator as $item) {
-            if (!$item->isLink() && $item->isDir()) {
-                rmdir($item);
-            } else {
-                unlink($item);
+            try{
+                $actions->symlink($bundleRoot->path(), $path.'/'.$name);
+            } catch (\Exception $e) {
+                $message = 'Failed to create a symlink. If using Windows re-run this command as administrator.';
+                throw new CommandException($message);
             }
         }
-        
-        rmdir($path);
     }
 }
