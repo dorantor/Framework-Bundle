@@ -13,7 +13,7 @@ return array(
             'type'     => 'pattern',
             'path'     => '(<processor>)',
             'defaults' => array(
-                'processor' => 'dashboard',
+                'processor' => 'greet',
                 'action'    => 'default'
             )
         )
