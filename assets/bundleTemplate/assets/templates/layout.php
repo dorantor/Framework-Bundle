@@ -2,7 +2,7 @@
 <html>
 	<head>
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300italic,400italic,700italic,400,300,700&amp;subset=all" rel="stylesheet">
-		<title>PHPixie 3.0</title>
+		<title>PHPixie 3</title>
 		<style>
 			body {
 				font-family: "Roboto Condensed", Helvetica, sans-serif;
@@ -33,7 +33,7 @@
 		</style>
 	</head>
 	<body>
-        <h1>PHPixie 3.0</h1>
+        <h1>PHPixie 3</h1>
         <p><img src="https://phpixie.com/images/logo.png" alt="PHPixie"></p>
 		<?php $this->childContent();?>
 		<p><a href="https://gitter.im/PHPixie/Hotline">Hotline Chat</a></p>
