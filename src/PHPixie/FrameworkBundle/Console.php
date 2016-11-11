@@ -14,7 +14,7 @@ class Console extends \PHPixie\Console\Registry\Provider\Implementation
     
     public function commandNames()
     {
-        return array('installWebAssets', 'generateBundle');
+        return array('installWebAssets', 'generateBundle', 'database', 'migrate', 'seed');
     }
     
     protected function buildInstallWebAssetsCommand($commandConfig)
@@ -33,5 +33,23 @@ class Console extends \PHPixie\Console\Registry\Provider\Implementation
             $commandConfig,
             $this->frameworkBuilder
         );
+    }
+    
+    protected function buildDatabaseCommand($commandConfig)
+    {
+        $migrate = $this->frameworkBuilder->components()->migrate();
+        return $migrate->consoleCommands()->buildCommand('database', $commandConfig);
+    }
+    
+    protected function buildMigrateCommand($commandConfig)
+    {
+        $migrate = $this->frameworkBuilder->components()->migrate();
+        return $migrate->consoleCommands()->buildCommand('run', $commandConfig);
+    }
+    
+    protected function buildSeedCommand($commandConfig)
+    {
+        $migrate = $this->frameworkBuilder->components()->migrate();
+        return $migrate->consoleCommands()->buildCommand('seed', $commandConfig);
     }
 }
