@@ -44,7 +44,7 @@ class Console extends \PHPixie\Console\Registry\Provider\Implementation
     protected function buildMigrateCommand($commandConfig)
     {
         $migrate = $this->frameworkBuilder->components()->migrate();
-        return $migrate->consoleCommands()->buildCommand('run', $commandConfig);
+        return $migrate->consoleCommands()->buildCommand('migrate', $commandConfig);
     }
     
     protected function buildSeedCommand($commandConfig)
