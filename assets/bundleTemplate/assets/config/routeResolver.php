@@ -2,20 +2,16 @@
 
 return array(
     'type'      => 'group',
+    'defaults'  => array('action' => 'default'),
     'resolvers' => array(
         
         'action' => array(
-            'type'     => 'pattern',
-            'path'     => '<processor>/<action>'
+            'path' => '<processor>/<action>'
         ),
-        
+
         'processor' => array(
-            'type'     => 'pattern',
             'path'     => '(<processor>)',
-            'defaults' => array(
-                'processor' => 'greet',
-                'action'    => 'default'
-            )
+            'defaults' => array('processor' => 'greet')
         )
     )
 );
