@@ -27,13 +27,22 @@ class Builder extends \PHPixie\DefaultBundle\Builder
 
     /**
      * Build Console command registry
-     * @return ConsoleCommands
+     * @return Console
      */
     protected function buildConsoleProvider()
     {
         return new Console($this);
     }
-    
+
+    /**
+     * Build Auth repository registry
+     * @return AuthRepositories
+     */
+    protected function buildAuthRepositories()
+    {
+        return new AuthRepositories($this);
+    }
+
     /**
      * Get bundle root directory
      * @return string
