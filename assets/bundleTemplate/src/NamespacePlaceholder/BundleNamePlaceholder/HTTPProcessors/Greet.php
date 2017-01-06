@@ -3,32 +3,19 @@
 namespace NamespacePlaceholder\BundleNamePlaceholder\HTTPProcessors;
 
 use PHPixie\HTTP\Request;
-use PHPixie\Template;
 
-class Greet extends \PHPixie\DefaultBundle\Processor\HTTP\Actions
+class Greet extends Processor
 {
-    /**
-     * @var Template Template component
-     */
-    protected $template;
-
-    /**
-     * Constructor
-     * @param Template $template
-     */
-    public function __construct($template)
-    {
-        $this->template = $template;
-    }
-
     /**
      * Default action
      * @param Request $request HTTP request
-     * @return Template\Container
+     * @return mixed
      */
     public function defaultAction($request)
     {
-        $container = $this->template->get('app:greet');
+        $template = $this->components()->template();
+
+        $container = $template->get('app:greet');
         $container->message = "Have fun coding!";
         return $container;
     }

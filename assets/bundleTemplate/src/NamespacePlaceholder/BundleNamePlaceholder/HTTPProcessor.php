@@ -20,14 +20,11 @@ class HTTPProcessor extends \PHPixie\DefaultBundle\Processor\HTTP\Builder
 
     /**
      * Build 'greet' processor
+     *
      * @return HTTPProcessors\Greet
      */
     protected function buildGreetProcessor()
     {
-        $components = $this->builder->components();
-        
-        return new HTTPProcessors\Greet(
-            $components->template()    
-        );
+        return new HTTPProcessors\Greet($this->builder);
     }
 }

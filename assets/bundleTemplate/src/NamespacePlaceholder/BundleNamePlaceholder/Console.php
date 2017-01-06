@@ -2,6 +2,8 @@
 
 namespace NamespacePlaceholder\BundleNamePlaceholder;
 
+use \PHPixie\Console\Command\Config;
+
 class Console extends \PHPixie\DefaultBundle\Console
 {
     /**
@@ -26,12 +28,12 @@ class Console extends \PHPixie\DefaultBundle\Console
     /**
      * Build 'greet' command
      *
-     * @param \PHPixie\Console\Command\Config $commandConfig
+     * @param Config $commandConfig
      *
      * @return Console\Greet
      */
     protected function buildGreetCommand($commandConfig)
     {
-        return new Console\Greet($commandConfig);
+        return new Console\Greet($commandConfig, $this->builder);
     }
 }
