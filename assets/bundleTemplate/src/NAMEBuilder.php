@@ -1,28 +1,28 @@
 <?php
 
-namespace NamespacePlaceholder\BundleNamePlaceholder;
+namespace NS\BUNDLE;
 
 /**
  * App bundle builder
  */
-class Builder extends \PHPixie\DefaultBundle\Builder
+class BUNDLEBuilder extends \PHPixie\DefaultBundle\Builder
 {
     /**
      * Build Processor for HTTP requests
-     * @return HTTPProcessor
+     * @return HTTP
      */
     protected function buildHttpProcessor()
     {
-        return new HTTPProcessor($this);
+        return new HTTP($this);
     }
 
     /**
      * Build ORM Wrappers
-     * @return ORMWrappers
+     * @return ORM
      */
     protected function buildORMWrappers()
     {
-        return new ORMWrappers($this);
+        return new ORM($this);
     }
 
     /**
@@ -32,15 +32,6 @@ class Builder extends \PHPixie\DefaultBundle\Builder
     protected function buildConsoleProvider()
     {
         return new Console($this);
-    }
-
-    /**
-     * Build Auth repository registry
-     * @return AuthRepositories
-     */
-    protected function buildAuthRepositories()
-    {
-        return new AuthRepositories($this);
     }
 
     /**
@@ -58,6 +49,6 @@ class Builder extends \PHPixie\DefaultBundle\Builder
      */
     public function bundleName()
     {
-        return 'bundleNamePlaceholder';
+        return 'BUNDLE';
     }
 }

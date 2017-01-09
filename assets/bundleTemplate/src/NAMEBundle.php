@@ -1,19 +1,19 @@
 <?php
 
-namespace NamespacePlaceholder;
+namespace NS\BUNDLE;
 
 /**
  * Default application bundle
  */
-class BundleNamePlaceholder extends \PHPixie\DefaultBundle
+class BUNDLEBundle extends \PHPixie\DefaultBundle
 {
     /**
      * Build bundle builder
      * @param \PHPixie\BundleFramework\Builder $frameworkBuilder
-     * @return BundleNamePlaceholder\Builder
+     * @return BUNDLEBuilder
      */
     protected function buildBuilder($frameworkBuilder)
     {
-        return new BundleNamePlaceholder\Builder($frameworkBuilder);
+        return new BUNDLEBuilder($frameworkBuilder);
     }
 }

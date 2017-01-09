@@ -1,8 +1,8 @@
 <?php
 
-namespace NamespacePlaceholder\BundleNamePlaceholder\HTTPProcessors;
+namespace NS\BUNDLE\HTTP;
 
-use NamespacePlaceholder\BundleNamePlaceholder\Builder;
+use NS\BUNDLE\BUNDLEBuilder;
 use PHPixie\BundleFramework\Components;
 use PHPixie\DefaultBundle\Processor\HTTP\Actions;
 
@@ -12,13 +12,13 @@ use PHPixie\DefaultBundle\Processor\HTTP\Actions;
 abstract class Processor extends Actions
 {
     /**
-     * @var Builder
+     * @var BUNDLEBuilder
      */
     protected $builder;
 
     /**
      * Constructor
-     * @param Builder $builder
+     * @param BUNDLEBuilder $builder
      */
     public function __construct($builder)
     {

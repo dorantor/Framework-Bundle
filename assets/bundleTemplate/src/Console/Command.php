@@ -1,8 +1,8 @@
 <?php
 
-namespace NamespacePlaceholder\BundleNamePlaceholder\Console;
+namespace NS\BUNDLE\Console;
 
-use NamespacePlaceholder\BundleNamePlaceholder\Builder;
+use NS\BUNDLE\BUNDLEBuilder;
 use PHPixie\Console\Command\Config;
 use PHPixie\Console\Command\Implementation;
 use PHPixie\BundleFramework\Components;
@@ -13,13 +13,13 @@ use PHPixie\BundleFramework\Components;
 abstract class Command extends Implementation
 {
     /**
-     * @var Builder
+     * @var BUNDLEBuilder
      */
     protected $builder;
 
     /**
      * @param Config $config
-     * @param Builder $builder
+     * @param BUNDLEBuilder $builder
      */
     public function __construct($config, $builder)
     {

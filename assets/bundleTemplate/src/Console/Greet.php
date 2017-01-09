@@ -1,6 +1,6 @@
 <?php
 
-namespace NamespacePlaceholder\BundleNamePlaceholder\Console;
+namespace NS\BUNDLE\Console;
 
 use PHPixie\Console\Command\Config;
 use PHPixie\Slice\Data;
@@ -21,8 +21,6 @@ class Greet extends Command
         
         $config->argument('message')
             ->description("Message to display");
-        
-        parent::__construct($config, $builder);
     }
 
     /**
