@@ -58,26 +58,25 @@ class GenerateBundle extends \PHPixie\Console\Command\Implementation
         
         $actions->copy($src, $path);
         $srcPath = $path.'src/';
-        $namespacePath = $srcPath.$namespace.'/';
-        
-        $actions->move($srcPath.'NamespacePlaceholder', $namespacePath);
-        $actions->move($namespacePath.'BundleNamePlaceholder.php', $namespacePath."$bundleName.php");
-        $actions->move($namespacePath.'BundleNamePlaceholder', $namespacePath.$bundleName);
+
+        $actions->move($srcPath.'BNAMEBundle.php', $srcPath."{$bundleName}Bundle.php");
+        $actions->move($srcPath.'BNAMEBuilder.php', $srcPath."{$bundleName}Builder.php");
         
         $this->replaceRecursive($path, [
-            'BundleNamePlaceholder' => $bundleName,
-            'bundleNamePlaceholder' => $lowerName,
-            'NamespacePlaceholder'  => $namespace
+            'BNAME' => $bundleName,
+            'bname' => $lowerName,
+            'NS'    => $namespace
         ]);
-        
-        $bundleClass = "\\$namespace\\$bundleName";
-        $this->writeLine("Generated bundle $bundleClass");
+
+        $bundleNamespace = "$namespace\\$bundleName";
+        $bundleClass = "\\$bundleNamespace\\{$bundleName}Bundle";
+        $this->writeLine("Generated bundle $bundleName");
         
         if($optionData->get('skip-register', false)) {
             return;
         }
         
-        $this->updateComposerJson($root->path('composer.json'), $lowerName);
+        $this->updateComposerJson($root->path('composer.json'), $lowerName, $bundleNamespace);
         $this->registerBundle($projectNamespace.'\Framework\Bundles', $bundleClass);
         $this->writeLine("Registered bundle $bundleClass");
         $this->writeLine("IMPORTANT: run 'composer install' to make generated classes autoloadable");
@@ -107,16 +106,14 @@ class GenerateBundle extends \PHPixie\Console\Command\Implementation
         }
     }
     
-    protected function updateComposerJson($path, $lowerName)
+    protected function updateComposerJson($path, $lowerName, $namespace)
     {
         $this->writeLine("Updating composer.json");
         $composer = json_decode(file_get_contents($path), true);
         $srcPath = "bundles/$lowerName/src/";
-        if(!in_array($srcPath, $composer['autoload']['psr-4'][''])) {
-            $composer['autoload']['psr-4'][''][] = $srcPath;
-            $composer = json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            file_put_contents($path, $composer);
-        }
+        $composer['autoload']['psr-4'][$namespace."\\"] = array($srcPath);
+        $composer = json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        file_put_contents($path, $composer);
     }
     
     protected function registerBundle($bundlesClass, $bundle)
@@ -129,6 +126,7 @@ class GenerateBundle extends \PHPixie\Console\Command\Implementation
         
         if(strpos($str, $bundle) !== false) {
             $this->writeLine("Class $bundle is already referenced in $bundlesClass. Skipping.");
+            return;
         }
         
         $placeholder = '/*GeneratorPlaceholder*/';

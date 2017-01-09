@@ -1,35 +1,24 @@
 <?php
 
-namespace NS\BUNDLE\HTTP;
+namespace NS\BNAME\HTTP;
 
-use NS\BUNDLE\BUNDLEBuilder;
-use PHPixie\BundleFramework\Components;
-use PHPixie\DefaultBundle\Processor\HTTP\Actions;
+use NS\BNAME\BNAMEBuilder;
 
 /**
  * Your base web processor class
  */
-abstract class Processor extends Actions
+abstract class Processor extends \PHPixie\DefaultBundle\HTTP\Processor
 {
     /**
-     * @var BUNDLEBuilder
+     * @var BNAMEBuilder
      */
     protected $builder;
 
     /**
-     * Constructor
-     * @param BUNDLEBuilder $builder
+     * @param BNAMEBuilder $builder
      */
     public function __construct($builder)
     {
         $this->builder = $builder;
-    }
-
-    /**
-     * @return Components
-     */
-    protected function components()
-    {
-        return $this->builder->components();
     }
 }

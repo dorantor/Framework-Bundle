@@ -1,9 +1,12 @@
 <?php
 
-namespace NS\BUNDLE\HTTP;
+namespace NS\BNAME\HTTP;
 
 use PHPixie\HTTP\Request;
 
+/**
+ * Simple greeting web page
+ */
 class Greet extends Processor
 {
     /**
@@ -15,7 +18,7 @@ class Greet extends Processor
     {
         $template = $this->components()->template();
 
-        $container = $template->get('app:greet');
+        $container = $template->get('bname:greet');
         $container->message = "Have fun coding!";
         return $container;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace NS\BUNDLE;
+namespace NS\BNAME;
 
 /**
  * Here you can define wrappers for the ORM to use.

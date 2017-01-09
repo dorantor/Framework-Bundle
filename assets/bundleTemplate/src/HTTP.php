@@ -1,10 +1,10 @@
 <?php
 
-namespace NS\BUNDLE;
+namespace NS\BNAME;
 
 class HTTP extends \PHPixie\DefaultBundle\HTTP
 {
-    protected $classMap = [
-        'greet' => 'NS\BUNDLE\HTTP\Greet'
-    ];
+    protected $classMap = array(
+        'greet' => 'NS\BNAME\HTTP\Greet'
+    );
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace NS\BUNDLE;
+namespace NS\BNAME;
 
 class Console extends \PHPixie\DefaultBundle\Console
 {
-    protected $classMap = [
-        'greet' => 'NS\BUNDLE\Console\Greet'
-    ];
+    protected $classMap = array(
+        'greet' => 'NS\BNAME\Console\Greet'
+    );
 }

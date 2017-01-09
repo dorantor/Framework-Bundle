@@ -1,6 +1,6 @@
 <?php
 
-namespace NS\BUNDLE\Console;
+namespace NS\BNAME\Console;
 
 use PHPixie\Console\Command\Config;
 use PHPixie\Slice\Data;

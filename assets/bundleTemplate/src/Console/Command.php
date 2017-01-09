@@ -1,38 +1,29 @@
 <?php
 
-namespace NS\BUNDLE\Console;
+namespace NS\BNAME\Console;
 
-use NS\BUNDLE\BUNDLEBuilder;
+use NS\BNAME\BNAMEBuilder;
 use PHPixie\Console\Command\Config;
-use PHPixie\Console\Command\Implementation;
-use PHPixie\BundleFramework\Components;
 
 /**
  * Your base command class
  */
-abstract class Command extends Implementation
+abstract class Command extends \PHPixie\DefaultBundle\Console\Command
 {
     /**
-     * @var BUNDLEBuilder
+     * @var BNAMEBuilder
      */
     protected $builder;
 
     /**
      * @param Config $config
-     * @param BUNDLEBuilder $builder
+     * @param BNAMEBuilder $builder
      */
     public function __construct($config, $builder)
     {
         $this->builder = $builder;
+        $this->configure($config);
         parent::__construct($config);
-    }
-
-    /**
-     * @return Components
-     */
-    protected function components()
-    {
-        return $this->builder->components();
     }
 
     /**

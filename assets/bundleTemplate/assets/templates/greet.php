@@ -1,3 +1,3 @@
-<?php $this->layout('app:layout');?>
+<?php $this->layout('bname:layout');?>
 
 <h2><?=$_($message); ?></h2>

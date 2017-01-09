@@ -1,11 +1,13 @@
 <?php
 
-namespace NS\BUNDLE;
+namespace NS\BNAME;
+
+use \PHPixie\DefaultBundle\Builder;
 
 /**
  * App bundle builder
  */
-class BUNDLEBuilder extends \PHPixie\DefaultBundle\Builder
+class BNAMEBuilder extends Builder
 {
     /**
      * Build Processor for HTTP requests
@@ -49,6 +51,6 @@ class BUNDLEBuilder extends \PHPixie\DefaultBundle\Builder
      */
     public function bundleName()
     {
-        return 'BUNDLE';
+        return 'bname';
     }
 }
