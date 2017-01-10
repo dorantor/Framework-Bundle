@@ -42,7 +42,7 @@ class BNAMEBuilder extends Builder
      */
     protected function getRootDirectory()
     {
-        return realpath(__DIR__.'/../../../');
+        return realpath(__DIR__.'/../');
     }
 
     /**
