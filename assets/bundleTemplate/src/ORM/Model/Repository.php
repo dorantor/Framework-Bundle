@@ -2,10 +2,11 @@
 
 namespace NS\BNAME\ORM\Model;
 
-use PHPixie\ORM\Wrappers\Type\Database\Repository as DatabaseRepository;
+use PHPixie\ORM\Models\Type\Database\Repository as DatabaseRepository;
+use PHPixie\ORM\Wrappers\Type\Database\Repository as DatabaseRepositoryWrapper;
 use NS\BNAME\BNAMEBuilder;
 
-abstract class Repository extends DatabaseRepository
+abstract class Repository extends DatabaseRepositoryWrapper
 {
     /**
      * @var BNAMEBuilder
