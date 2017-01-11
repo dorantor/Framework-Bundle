@@ -1,6 +1,6 @@
 <?php
 
-namespace NS\BNAME;
+namespace NS\BNAME\ORM\Model;
 
 use PHPixie\ORM\Models\Type\Database\Entity as DatabaseEntity;
 use PHPixie\ORM\Wrappers\Type\Database\Entity as DatabaseEntityWrapper;
