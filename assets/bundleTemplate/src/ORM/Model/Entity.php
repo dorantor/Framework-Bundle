@@ -2,10 +2,11 @@
 
 namespace NS\BNAME;
 
-use PHPixie\ORM\Wrappers\Type\Database\Entity as DatabaseEntity;
+use PHPixie\ORM\Models\Type\Database\Entity as DatabaseEntity;
+use PHPixie\ORM\Wrappers\Type\Database\Entity as DatabaseEntityWrapper;
 use NS\BNAME\BNAMEBuilder;
 
-abstract class Entity extends DatabaseEntity
+abstract class Entity extends DatabaseEntityWrapper
 {
     /**
      * @var BNAMEBuilder
